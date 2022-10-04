@@ -14,28 +14,17 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-from docs.doc_utils import get_bl_info_name  # noqa: E402
-from docs.doc_utils import get_bl_info_author  # noqa: E402
-from docs.doc_utils import get_bl_info_version  # noqa: E402
-from docs.doc_utils import get_copyright  # noqa: E402
 
 
 # -- Project information -----------------------------------------------------
 
-project = get_bl_info_name()
-copyright = get_copyright()
-author = get_bl_info_author()
+project = 'ColorRampConverter'
+copyright = '2022, Mark Elek, David Elek'
+author = 'Mark Elek, David Elek'
 
 # The full version, including alpha/beta/rc tags
-version = get_bl_info_version()
-release = version
-
-# Uncomment to check for potential parsing issues
-# print(f'\nPROJECT: {get_bl_info_name()}')
-# print(f'AUTHOR: {get_bl_info_author()}')
-# print(f'COPYRIGHT: {get_copyright()}')
-# print(f'RELEASE: {get_bl_info_version()}\n')
-
+version = '1.0.0'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 
