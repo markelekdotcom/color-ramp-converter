@@ -3,9 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-===================
-ColorRampConverter
-===================
+
 
 ----------------------------
 What is ColorRampConverter?
@@ -32,30 +30,13 @@ What is ColorRampConverter?
    <a href="https://www.patreon.com/davidelekdotcom" target="_blank">Patreon</a>
 
 
-ColorRampConverter is a |Blender| add-on that generates custom node groups
-from color ramp nodes, making a few parameters more accessible.
-
-.. image:: images/colorrampconverter_index.png
-   :alt: ColorRampConverter at work
-
-.. |Blender| raw:: html
-
-   <a href="https://www.blender.org/" target="_blank">Blender</a>
-
-
-
-.. include:: features.rst
-
---------------------
-Where can I get it?
---------------------
 
 |Gumroad_Button|
 
 .. |Gumroad_Button| raw:: html
 
-   <script src="https://gumroad.com/js/gumroad.js"></script>
-   <a class="gumroad-button" href="https://davidelek.gumroad.com/l/colorrampconverter">Available on</a>
+   <script src="https://gumroad.com/js/gumroad-embed.js"></script>
+   <div class="gumroad-product-embed"><a href="https://davidelek.gumroad.com/l/colorrampconverter">Loading...</a></div>
 
 .. include:: contents.rst
 
