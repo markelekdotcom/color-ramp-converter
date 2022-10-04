@@ -17,7 +17,7 @@ What is ColorRampConverter?
 
 .. |Github| raw:: html
 
-   <a href="https://github.com/markelekdotcom/color-ramp-converter" target="_blank">Gumroad</a>
+   <a href="https://github.com/markelekdotcom/color-ramp-converter" target="_blank">Github</a>
 
 .. |Gumroad| raw:: html
 
