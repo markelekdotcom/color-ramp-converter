@@ -1,1 +1,1 @@
-# color-ramp-converter
+![ColorRampConverter](docs/images/colorrampconverter_index.png)
