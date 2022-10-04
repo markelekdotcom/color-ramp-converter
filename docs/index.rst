@@ -13,8 +13,11 @@ What is ColorRampConverter?
 
 |Links|
 
-.. |Links| replace:: |Gumroad| `|` |Blendermarket| `|` |Patreon| `|`
-   |Linktree| `|` :ref:`contact:Contact`
+.. |Links| replace:: |Gumroad| `|` :ref:`contact:Contact` `|` |Github|
+
+.. |Github| raw:: html
+
+   <a href="https://github.com/markelekdotcom/color-ramp-converter" target="_blank">Gumroad</a>
 
 .. |Gumroad| raw:: html
 
@@ -27,10 +30,6 @@ What is ColorRampConverter?
 .. |Patreon| raw:: html
 
    <a href="https://www.patreon.com/davidelekdotcom" target="_blank">Patreon</a>
-
-.. |Linktree| raw:: html
-
-   <a href="https://www.linktr.ee/davidelekdotcom/" target="_blank">Linktree</a>
 
 
 ColorRampConverter is a |Blender| add-on that generates custom node groups
