@@ -23,8 +23,8 @@ copyright = '2022, Mark Elek, David Elek'
 author = 'Mark Elek, David Elek'
 
 # The full version, including alpha/beta/rc tags
-version = '1.0.0'
-release = '1.0.0'
+version = '1.0.1'
+release = '1.0.1'
 
 # -- General configuration ---------------------------------------------------
 
