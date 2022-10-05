@@ -40,8 +40,8 @@ bl_info = {
     "version": (1, 0, 0),
     "location": "Shader Editor -> 'N' Sidebar -> 'Convert Color Ramp' Panel",
     "warning": "",
-    "wiki_url": "",
-    "tracker_url": "",
+    "doc_url": "https://colorrampconverter.readthedocs.io/en/latest/",
+    "tracker_url": "https://github.com/markelekdotcom/color-ramp-converter/issues",
     "support": "COMMUNITY",
     "category": "Node"
 }
