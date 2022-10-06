@@ -30,3 +30,25 @@ If you have previously installed the add-on:
 
 .. image:: images/preferences_remove.png
   :alt: ColorRampConverter Installed
+
+
+Github
+-------
+
+Make sure to download the proper zip file!
+(this is an example, version numbers may differ)
+
+.. image:: images/github_install.png
+  :alt: ColorRampConverter Installed
+
+The source code has version numbers attached and will cause issues!
+
+
+Installation Issues
+--------------------
+
+Find the folder where Blender places the addon files, something like:
+
+"C:\\Users\\[YOURUSERNAME]\\AppData\\Roaming\\Blender Foundation\\Blender\\3.3\\scripts\\addons"
+
+**Make sure this addon's folder has this exact name: color-ramp-converter**
