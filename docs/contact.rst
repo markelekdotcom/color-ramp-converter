@@ -5,16 +5,6 @@ Contact
 | > Need to contact one of the creators?
 | > You've come to the right place.
 
-----------
-|Discord|
-----------
-
-.. |Discord| raw:: html
-
-   <a href="https://discord.gg/m8ct5xYMCU" target="_blank">Discord</a>
-
-------------------------
-
 
 -----------
 David Elek

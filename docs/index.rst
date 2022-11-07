@@ -23,7 +23,7 @@ What is ColorRampConverter?
 
 .. |Blendermarket| raw:: html
 
-   <a href="https://blendermarket.com/products/colorrampconverter" target="_blank">Blendermarket</a>
+   <a href="https://blendermarket.com/products/colorrampconverter" target="_blank">BlenderMarket</a>
 
 .. |Artstation| raw:: html
 
