@@ -11,7 +11,7 @@ Quickly convert between custom node group solution and color ramp node.
    :alt: Dynamic conversion feature
 
 .. note::
-    Connected links are managed automatically by the add-on
+    Connected links are managed automatically by the addon
 
 
 Node Group Logic

@@ -39,7 +39,7 @@ Addon Preferences
 .. image:: images/preferences.png
     :alt: addon preferences
 
-| You can adjust a few aspects of the add-on by going to:
+| You can adjust a few aspects of the addon by going to:
 | *Edit -> Preferences -> Add-ons -> expand ColorRampConverter* entry.
 
 

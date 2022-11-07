@@ -77,7 +77,7 @@ class WM_OT_ColorRampConverter(Operator):
 
 class WM_OT_ResetSettings(Operator):
     """
-    Operator to reset all add-on preferences to default values
+    Operator to reset all addon preferences to default values
     """
     bl_label = "Reset ColorRampConverter Preferences"
     bl_idname = "wm.reset_settings"
@@ -85,7 +85,7 @@ class WM_OT_ResetSettings(Operator):
 
     def execute(self, context):
         """
-        Reset all add-on preferences to default values
+        Reset all addon preferences to default values
         """
         addon_prefs = get_addon_prefs()
         props = addon_prefs.__annotations__.keys()
