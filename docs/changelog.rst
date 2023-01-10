@@ -15,3 +15,12 @@ Changelog
   October 04, 2022
 
   Hotfix, docs and readme changes
+
+1.1.1
+------
+
+  January 10, 2023
+
+  Support for constant interpolation,
+  Converting back to color ramps sets the correct values,
+  Existing node trees won't be reused anymore to avoid potential issues

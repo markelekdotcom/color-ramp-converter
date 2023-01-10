@@ -612,6 +612,52 @@ def link_nodes(node_group):
                 mix_rgb_nodes[i].inputs[2], mix_rgb_nodes[i+1].outputs[0])
 
 
+def link_nodes_v2(node_group):
+    """
+    Link all nodes in the custom node group in a specific way if interpolation is set to 'CONSTANT'
+
+    :param node_group: The node group to link nodes in
+    :type node_group: bpy.types.NodeGroup
+
+    """
+    color_ramp_nodes = [
+        node for node in node_group.nodes if is_color_ramp(node)]
+    mix_rgb_nodes = [
+        node for node in node_group.nodes if is_mix_rgb(node)]
+    node_group_input_node = node_group.nodes.get('Group Input')
+    node_group_output_node = node_group.nodes.get('Group Output')
+
+    color_ramp_node_count = len(color_ramp_nodes)
+
+    for i in range(color_ramp_node_count):
+
+        # Link Color Ramp nodes' 'Fac' inputs to the node group's 'Fac input'
+        node_group.links.new(node_group_input_node.outputs['Fac'],
+                             color_ramp_nodes[i].inputs['Fac'])
+
+        # Link the Color Ramps' 'Color' output to MixRGB nodes' 'Fac' inputs
+        node_group.links.new(color_ramp_nodes[i].outputs[0],
+                             mix_rgb_nodes[i].inputs['Fac'])
+
+        if i+1 < color_ramp_node_count:
+
+            # link MixRGB nodes together
+            node_group.links.new(mix_rgb_nodes[i+1].outputs[0],
+                                 mix_rgb_nodes[i].inputs[2])
+
+        # link the node group's color inputs to MixRgb nodes' 'Color1' inputs
+        node_group.links.new(node_group_input_node.outputs[f"Color{i+1}"],
+                             mix_rgb_nodes[i].inputs[1])
+
+    # Link the last MixRGB node's 'Color2' inputs to the node group's 'Color' inputs
+    node_group.links.new(node_group_input_node.outputs[f"Color{color_ramp_node_count+1}"],
+                         mix_rgb_nodes[-1].inputs[2])
+
+    # Link the first MixRGB node's 'Color' output to the node group's 'Color' output
+    node_group.links.new(mix_rgb_nodes[0].outputs[0],
+                         node_group_output_node.inputs[0])
+
+
 def instantiate_node_group(node_group, node_group_type, node_group_name, node_tree):
     """
     Instantiate a node group in a node tree
@@ -682,6 +728,8 @@ def create_node_group(node_group_name, node_tree, color_ramp, interpolation_type
     :type node_tree: bpy.types.NodeTree
     :param color_ramp: The color ramp to create the node group from
     :type color_ramp: [bpy.types.ShaderNodeValToRGB, bpy.types.CompositeNodeValToRGB]
+    :param interpolation_type: The interpolation type of the map range nodes in the custom node group
+    :type interpolation_type: str in ['LINEAR', 'STEPPED', 'SMOOTHSTEP', 'SMOOTHERSTEP']
     :return: The created node group
     :rtype: bpy.types.NodeGroup
     """
@@ -695,57 +743,8 @@ def create_node_group(node_group_name, node_tree, color_ramp, interpolation_type
     mix_rgb_nodes = []
 
     existing_node_group = bpy.data.node_groups.get(node_group_name)
-    if (existing_node_group is not None
-            and existing_node_group.name == node_group_name
-            # can't reuse shader node tree in compositor node tree or vice versa
-            and existing_node_group.bl_idname == f'{node_tree_type}NodeTree'):
-
-        set_or_create_node_group_input(existing_node_group, 'NodeSocketFloat',
-                                       'Fac', color_ramp.inputs[0].default_value)
-
-        # remove 'to min' and 'to max' input
-        existing_node_group.inputs.remove(existing_node_group.inputs['To Min'])
-        existing_node_group.inputs.remove(existing_node_group.inputs['To Max'])
-
-        for i in range(color_count):
-            # add colors of color stops as inputs to node group
-            set_or_create_node_group_input(existing_node_group, 'NodeSocketColor', f'Color{i+1}',
-                                           color_ramp_elements[i].color)
-
-            # add positions of color stops as inputs to node group
-            set_or_create_node_group_input(existing_node_group, 'NodeSocketFloat', f'Pos{i+1}',
-                                           color_ramp_elements[i].position)
-
-            # need one less from these nodes
-            if i+1 < color_count:
-                # add map range nodes
-                map_range_node = get_or_create_node(existing_node_group, f'{node_tree_type}NodeMapRange',
-                                                    f'Map Range{i+1}', (0, -i*300))
-                set_map_range_interpolation(map_range_node, interpolation_type)
-                map_range_nodes.append(map_range_node)
-
-                # add mix rgb nodes
-                mix_rgb_node = get_or_create_node(existing_node_group, f'{node_tree_type}NodeMixRGB',
-                                                  f'Mix{i+1}', (200, -i*300))
-                mix_rgb_nodes.append(mix_rgb_node)
-
-        set_or_create_node_group_input(existing_node_group,
-                                       'NodeSocketFloat', 'To Min', 0)
-        set_or_create_node_group_input(existing_node_group,
-                                       'NodeSocketFloat', 'To Max', 1)
-
-        remove_excess_nodes(existing_node_group.nodes)
-
-        mark_nodes_as_excess(existing_node_group.nodes)
-
-        link_nodes(existing_node_group)
-
-        node_group = instantiate_node_group(
-            existing_node_group, node_group_type, node_group_name, node_tree)
-
-        remove_excess_inputs(node_group)
-
-        return node_group
+    if existing_node_group:
+        bpy.data.node_groups.remove(existing_node_group, do_unlink=True)
 
     node_group = bpy.data.node_groups.new(
         node_group_name, f'{node_group_type}NodeTree')
@@ -799,7 +798,160 @@ def create_node_group(node_group_name, node_tree, color_ramp, interpolation_type
     node_group = instantiate_node_group(
         node_group, node_group_type, node_group_name, node_tree)
 
+    node_group.color_mode = color_ramp.color_ramp.color_mode
+    node_group.interpolation = color_ramp.color_ramp.interpolation
+    node_group.hue_interpolation = color_ramp.color_ramp.hue_interpolation
+
     return node_group
+
+
+def create_node_group_v2(node_group_name, node_tree, color_ramp):
+    """
+    Create a custom node group from a color ramp
+
+    :param node_group_name: The name of the node group to create
+    :type node_group_name: str
+    :param node_tree: The node tree to create the node group in
+    :type node_tree: bpy.types.NodeTree
+    :param color_ramp: The color ramp to create the node group from
+    :type color_ramp: [bpy.types.ShaderNodeValToRGB, bpy.types.CompositeNodeValToRGB]
+    :return: The created node group
+    :rtype: bpy.types.NodeGroup
+    """
+    node_tree_type = get_node_type(node_tree)
+    node_group_type = get_node_group_type(node_tree)
+    color_ramp_elements = color_ramp.color_ramp.elements
+    color_count = len(color_ramp_elements)
+
+    value_nodes = []
+    color_ramp_nodes = []
+    mix_rgb_nodes = []
+
+    existing_node_group = bpy.data.node_groups.get(node_group_name)
+
+    if existing_node_group:
+        bpy.data.node_groups.remove(existing_node_group, do_unlink=True)
+
+    node_group = bpy.data.node_groups.new(
+        node_group_name, f'{node_group_type}NodeTree')
+
+    # add fac input to node group
+    create_node_group_input(node_group, 'NodeSocketFloat',
+                            'Fac', color_ramp.inputs[0].default_value)
+
+    # add group input node
+    node_group_input_node = node_group.nodes.new('NodeGroupInput')
+    node_group_input_node.location = (-400, 0)
+
+    # add group output node
+    node_group_output_node = node_group.nodes.new('NodeGroupOutput')
+    node_group_output_node.location = (400, 0)
+
+    # add color input to group output node
+    node_group.outputs.new('NodeSocketColor', 'Color')
+
+    # create nodes
+    for i in range(color_count):
+        # add colors of color stops as inputs to node group
+        color_input = node_group.inputs.new('NodeSocketColor', f'Color{i+1}')
+        color_input.default_value = color_ramp_elements[i].color
+
+        # need one less from these nodes
+        if i+1 < color_count:
+
+            # add color ramp nodes
+            new_color_ramp = create_node(node_group, f'{node_tree_type}NodeValToRGB',
+                                         f'Color Ramp{i+1}', (-150, -i*300))
+
+            copy_base_color_ramp(color_ramp, new_color_ramp)
+
+            color_stop_left = color_ramp.color_ramp.elements[0]
+            color_stop_right = color_ramp.color_ramp.elements[i+1]
+            color_stop_current = color_ramp.color_ramp.elements[i]
+
+            new_color_ramp.color_ramp.elements[0].position = color_stop_left.position
+            new_color_ramp.color_ramp.elements[1].position = color_stop_right.position
+
+            """ if i == 0:
+                create_driver(new_color_ramp, node_group,
+                              ramp_element_index=0, input_name='Pos1')
+            else:
+
+                create_driver(new_color_ramp, node_group,
+                              ramp_element_index=1, input_name=f'Pos{i+2}') """
+
+            # add mix rgb nodes
+            mix_rgb_node = create_node(node_group, f'{node_tree_type}NodeMixRGB',
+                                       f'Mix{i+1}', (200, -i*300))
+            # set mix rgb node's firts color
+            mix_rgb_node.inputs[1].default_value = color_stop_current.color
+
+            mix_rgb_nodes.append(mix_rgb_node)
+
+    # set last mix rgb node's second color
+    mix_rgb_nodes[-1].inputs[2].default_value = color_ramp.color_ramp.elements[-1].color
+
+    link_nodes_v2(node_group)
+
+    node_group = instantiate_node_group(
+        node_group, node_group_type, node_group_name, node_tree)
+
+    return node_group
+
+
+def copy_base_color_ramp(src_color_ramp, dest_color_ramp):
+    """
+    Copy the base properties (interpolation, color_mode) of a color ramp node to another color ramp node
+
+    :param src_color_ramp: The source color ramp node to copy from
+    :type src_color_ramp: [bpy.types.ShaderNodeValToRGB, bpy.types.CompositeNodeValToRGB]
+    :param dest_color_ramp: The destination color ramp node to copy to
+    :type dest_color_ramp: [bpy.types.ShaderNodeValToRGB, bpy.types.CompositeNodeValToRGB]
+    """
+
+    # copy fac value
+    dest_color_ramp.inputs[0].default_value = src_color_ramp.inputs[0].default_value
+
+    # copy interpolation and color mode
+    dest_color_ramp.color_ramp.color_mode = src_color_ramp.color_ramp.color_mode
+    dest_color_ramp.color_ramp.interpolation = src_color_ramp.color_ramp.interpolation
+    dest_color_ramp.color_ramp.hue_interpolation = src_color_ramp.color_ramp.hue_interpolation
+
+    """ # copy color stops
+    for i in range(color_count):
+        src_stop = src_color_ramp.color_ramp.elements[i]
+        try:
+            dst_stop = dest_color_ramp.color_ramp.elements[i]
+        except Exception:
+            dst_stop = dest_color_ramp.color_ramp.elements.new(
+                src_stop.position)
+
+        dst_stop.position = src_stop.position
+        dst_stop.color = src_stop.color """
+
+
+def create_driver(color_ramp_node, node_group, ramp_element_index, input_name):
+
+    # Add a driver to the color ramp node
+    driver = color_ramp_node.color_ramp.elements[ramp_element_index].driver_add(
+        "position")
+
+    driver = driver.driver
+    driver.type = "AVERAGE"
+
+    driver.variables.new()
+    var = driver.variables[0]
+    var.name = 'var'
+    var.type = 'SINGLE_PROP'
+    # var.targets[0].id_type = 'NODETREE'
+    var.targets[0].id_type = 'MATERIAL'
+
+    active_mat_name = bpy.context.active_object.active_material.name
+    var.targets[0].id = bpy.data.materials[active_mat_name]
+    var.targets[0].data_path = f'node_tree.nodes["{node_group.name}"].inputs["{input_name}"].default_value'
+
+    # Set the driver expression
+    driver.expression = 'var'
 
 
 def auto_link_node_group(color_ramp, active_node_tree, node_group):
@@ -889,8 +1041,16 @@ def convert_color_ramp(self, context, color_ramp, node_tree):
     addon_prefs = get_addon_prefs()
 
     color_ramp_location = color_ramp.location
-    node_group = create_node_group(f'Converted{color_ramp.name}', node_tree, color_ramp,
-                                   scene.node_group_interpolation)
+
+    node_group = None
+
+    if color_ramp.color_ramp.interpolation == 'CONSTANT':
+        node_group = create_node_group_v2(
+            f'Converted{color_ramp.name}', node_tree, color_ramp)
+    else:
+        node_group = create_node_group(f'Converted{color_ramp.name}', node_tree, color_ramp,
+                                       scene.node_group_interpolation)
+
     auto_link_node_group(color_ramp, node_tree, node_group)
     if addon_prefs.copy_width:
         set_node_width(node_group, color_ramp.width)
@@ -938,6 +1098,11 @@ def create_color_ramp_node(name, node_tree, node_group):
     # set fac value
     color_ramp_node.inputs["Fac"].default_value = node_group.inputs["Fac"].default_value
 
+    # set basic color ramp settings from saved settings
+    color_ramp_node.color_ramp.color_mode = node_group.color_mode
+    color_ramp_node.color_ramp.interpolation = node_group.interpolation
+    color_ramp_node.color_ramp.hue_interpolation = node_group.hue_interpolation
+
     colors = []
     positions = []
     for i in range(1, len(node_group.inputs)-2):
@@ -953,6 +1118,78 @@ def create_color_ramp_node(name, node_tree, node_group):
             color_ramp_node.color_ramp.elements.new(positions[i])
         # set color of color stops
         color_ramp_node.color_ramp.elements[i].color = colors[i]
+        # set position of color ramp stops
+        color_ramp_node.color_ramp.elements[i].position = positions[i]
+
+    return color_ramp_node
+
+
+def create_color_ramp_node_v2(name, node_tree, node_group):
+    """
+    Create a color ramp node from converted node group
+    Used when interpolation is set to CONSTANT
+
+    :param name: The name of the color ramp node
+    :type name: str
+    :param node_tree: The node tree to add the node to
+    :type node_tree: bpy.types.NodeTree
+    :param node_group: The node group to create the color ramp from
+    :type node_group: bpy.types.NodeGroup
+    :return: The created color ramp node
+    :rtype: [bpy.types.ShaderNodeValToRGB, bpy.types.CompositeNodeValToRGB]
+    """
+
+    node_tree_type = get_node_type(node_tree)
+    color_ramp_node = node_tree.nodes.new(type=f'{node_tree_type}NodeValToRGB')
+    set_node_name(color_ramp_node, name)
+    set_node_label(color_ramp_node, name)
+
+    # set fac value
+    color_ramp_node.inputs["Fac"].default_value = node_group.inputs["Fac"].default_value
+
+    color_ramp_nodes = [
+        node for node in node_group.node_tree.nodes if is_color_ramp(node)]
+
+    # set basic color ramp settings
+    copy_base_color_ramp(color_ramp_nodes[0], color_ramp_node)
+
+    colors = []
+    positions = []
+
+    num_inputs = len(node_group.inputs)
+    num_color_ramp_nodes = len(color_ramp_nodes)
+
+    # get colors from node group
+    for i in range(1, num_inputs):
+        if 'Color' in node_group.inputs[i].name:
+            colors.append(node_group.inputs[i].default_value)
+
+    # get positions from color ramps
+    for i in range(num_color_ramp_nodes):
+        if i == 0:
+            positions.append(
+                color_ramp_nodes[i].color_ramp.elements[0].position)
+            positions.append(
+                color_ramp_nodes[i].color_ramp.elements[1].position)
+        else:
+            positions.append(
+                color_ramp_nodes[i].color_ramp.elements[1].position)
+
+    num_colors = len(colors)
+
+    # set values for color ramp
+    for i in range(num_colors):
+
+        if i < len(color_ramp_node.color_ramp.elements):
+            element_to_set = color_ramp_node.color_ramp.elements[i]
+        else:
+            element_to_set = color_ramp_node.color_ramp.elements.new(
+                positions[i])
+
+        # set color of color stops
+        element_to_set.color = colors[i]
+        # set position of color ramp stops
+        element_to_set.position = positions[i]
 
     return color_ramp_node
 
@@ -1005,8 +1242,16 @@ def convert_node_group(node_group, node_tree):
     color_ramp_name = node_group.node_tree.name.replace(
         'Converted', '')
 
-    color_ramp_node = create_color_ramp_node(
-        color_ramp_name, node_tree, node_group)
+    color_ramp_node = None
+    # TODO add additional check when adding a driver based implementation
+    is_constant_interpolation = bool(
+        any_color_ramp_node(node_group.node_tree.nodes))
+    if is_constant_interpolation:
+        color_ramp_node = create_color_ramp_node_v2(
+            color_ramp_name, node_tree, node_group)
+    else:
+        color_ramp_node = create_color_ramp_node(
+            color_ramp_name, node_tree, node_group)
 
     if addon_prefs.copy_width:
         set_node_width(color_ramp_node, node_group.width)
