@@ -11,11 +11,8 @@ What is ColorRampConverter?
 
 |Links|
 
-.. |Links| replace:: |Gumroad| `|` |Blendermarket| `|` |Artstation| `|` |Github| `|` :ref:`contact:Contact`
+.. |Links| replace:: |Gumroad| `|` |Blendermarket| `|` |Artstation| `|` :ref:`contact:Contact`
 
-.. |Github| raw:: html
-
-   <a href="https://github.com/markelekdotcom/color-ramp-converter" target="_blank">Github</a>
 
 .. |Gumroad| raw:: html
 

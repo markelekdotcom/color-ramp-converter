@@ -37,7 +37,7 @@ bl_info = {
     "author": "Mark Elek, David Elek",
     "description": "Convert Color Ramp node to Map Range nodes and back",
     "blender": (3, 4, 1),
-    "version": (1, 1, 1),
+    "version": (1, 1, 0),
     "location": "Shader Editor -> 'N' Sidebar -> 'Convert Color Ramp' Panel",
     "warning": "",
     "doc_url": "https://colorrampconverter.readthedocs.io/en/latest/",

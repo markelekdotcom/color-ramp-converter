@@ -16,7 +16,7 @@ Changelog
 
   Hotfix, docs and readme changes
 
-1.1.1
+1.1.0
 ------
 
   January 10, 2023
