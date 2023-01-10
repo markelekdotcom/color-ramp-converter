@@ -19,7 +19,7 @@ Changelog
 1.1.0
 ------
 
-  January 10, 2023
+  January 11, 2023
 
   Support for constant interpolation,
   Converting back to color ramps sets the correct values,
