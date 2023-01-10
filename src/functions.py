@@ -1044,7 +1044,7 @@ def convert_color_ramp(self, context, color_ramp, node_tree):
 
     node_group = None
 
-    if color_ramp.color_ramp.interpolation == 'CONSTANT':
+    if color_ramp.color_ramp.color_mode == 'RGB' and color_ramp.color_ramp.interpolation == 'CONSTANT':
         node_group = create_node_group_v2(
             f'Converted{color_ramp.name}', node_tree, color_ramp)
     else:
