@@ -98,12 +98,12 @@ def node_group_interpolation_items(self, context):
     ]
 
 
-interpolation_types = bpy.types.ColorRamp.bl_rna.properties['interpolation'].enum_items
-hue_interpolation_types = bpy.types.ColorRamp.bl_rna.properties['hue_interpolation'].enum_items
-color_mode_types = bpy.types.ColorRamp.bl_rna.properties['color_mode'].enum_items
-
-
 def register():
+
+    interpolation_types = bpy.types.ColorRamp.bl_rna.properties['interpolation'].enum_items
+    hue_interpolation_types = bpy.types.ColorRamp.bl_rna.properties[
+        'hue_interpolation'].enum_items
+    color_mode_types = bpy.types.ColorRamp.bl_rna.properties['color_mode'].enum_items
 
     bpy.types.ShaderNodeGroup.interpolation = bpy.props.EnumProperty(
         name="Interpolation",
