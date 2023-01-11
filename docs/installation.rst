@@ -32,17 +32,6 @@ If you have previously installed the add-on:
   :alt: ColorRampConverter Installed
 
 
-Github
--------
-
-Make sure to download the proper zip file!
-(this is an example, version numbers may differ)
-
-.. image:: images/github_install.png
-  :alt: ColorRampConverter Installed
-
-The source code has version numbers attached and will cause issues!
-
 
 Installation Issues
 --------------------

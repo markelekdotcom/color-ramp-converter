@@ -17,7 +17,14 @@ Quickly convert between custom node group solution and color ramp node.
 Node Group Logic
 -----------------
 .. image:: images/node_group_inside.png
-   :alt: Dynamic conversion feature
+   :alt: Node Group Logic
+
+Map range node based node group setup.
+
+.. image:: images/node_group_inside_v2.png
+   :alt: Node Group Logic v2
+
+Constant interpolation type support with a different node group setup.
 
 
 Add Extra Nodes

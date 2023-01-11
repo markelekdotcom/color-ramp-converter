@@ -100,6 +100,63 @@ def node_group_interpolation_items(self, context):
 
 def register():
 
+    interpolation_types = bpy.types.ColorRamp.bl_rna.properties['interpolation'].enum_items
+    hue_interpolation_types = bpy.types.ColorRamp.bl_rna.properties[
+        'hue_interpolation'].enum_items
+    color_mode_types = bpy.types.ColorRamp.bl_rna.properties['color_mode'].enum_items
+
+    bpy.types.ShaderNodeGroup.interpolation = bpy.props.EnumProperty(
+        name="Interpolation",
+        items=[(it.identifier, it.name, it.description, it.value)
+               for it in interpolation_types])
+
+    bpy.types.ShaderNodeGroup.hue_interpolation = bpy.props.EnumProperty(
+        name="Hue Interpolation",
+        items=[(hit.identifier, hit.name, hit.description, hit.value)
+               for hit in hue_interpolation_types])
+
+    bpy.types.ShaderNodeGroup.color_mode = bpy.props.EnumProperty(
+        name="Color Mode",
+        items=[(cmt.identifier, cmt.name, cmt.description, cmt.value)
+               for cmt in color_mode_types])
+
+    bpy.types.GeometryNodeGroup.interpolation = bpy.props.EnumProperty(
+        name="Interpolation",
+        items=[(it.identifier, it.name, it.description, it.value)
+               for it in interpolation_types])
+
+    bpy.types.GeometryNodeGroup.hue_interpolation = bpy.props.EnumProperty(
+        name="Hue Interpolation",
+        items=[(hit.identifier, hit.name, hit.description, hit.value)
+               for hit in hue_interpolation_types])
+
+    bpy.types.GeometryNodeGroup.color_mode = bpy.props.EnumProperty(
+        name="Color Mode",
+        items=[(cmt.identifier, cmt.name, cmt.description, cmt.value)
+               for cmt in color_mode_types])
+
+    bpy.types.CompositorNodeGroup.interpolation = bpy.props.EnumProperty(
+        name="Interpolation",
+        items=[(it.identifier, it.name, it.description, it.value)
+               for it in interpolation_types])
+
+    bpy.types.CompositorNodeGroup.hue_interpolation = bpy.props.EnumProperty(
+        name="Hue Interpolation",
+        items=[(hit.identifier, hit.name, hit.description, hit.value)
+               for hit in hue_interpolation_types])
+
+    bpy.types.CompositorNodeGroup.color_mode = bpy.props.EnumProperty(
+        name="Color Mode",
+        items=[(cmt.identifier, cmt.name, cmt.description, cmt.value)
+               for cmt in color_mode_types])
+
+    # TODO implement driver based implementation
+    bpy.types.Scene.use_drivers = BoolProperty(
+        name="Use Drivers",
+        description="Allow the use of driver based implementation for the converted node groups",
+        default=False,
+    )
+
     bpy.types.ShaderNodeGroup.is_converted = BoolProperty(
         name="Is Converted",
         description="Is this a converted color ramp node group?",
@@ -156,6 +213,19 @@ def register():
 
 def unregister():
 
+    del bpy.types.ShaderNodeGroup.interpolation
+    del bpy.types.ShaderNodeGroup.hue_interpolation
+    del bpy.types.ShaderNodeGroup.color_mode
+
+    del bpy.types.GeometryNodeGroup.interpolation
+    del bpy.types.GeometryNodeGroup.hue_interpolation
+    del bpy.types.GeometryNodeGroup.color_mode
+
+    del bpy.types.CompositorNodeGroup.interpolation
+    del bpy.types.CompositorNodeGroup.hue_interpolation
+    del bpy.types.CompositorNodeGroup.color_mode
+
+    del bpy.types.Scene.use_drivers
     del bpy.types.ShaderNodeGroup.is_converted
     del bpy.types.CompositorNodeGroup.is_converted
     del bpy.types.GeometryNodeGroup.is_converted
