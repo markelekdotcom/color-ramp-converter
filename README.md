@@ -14,6 +14,6 @@ Read more: <a href="https://colorrampconverter.readthedocs.io/en/latest/" target
 
 - ## 🛒 on <a href="https://davidelek.gumroad.com/l/colorrampconverter" target="_blank">Gumroad</a>
 
-- ## 🛒 on <a href="https://blendermarket.com/products/colorrampconverter" target="_blank">BlenderMarket</a>
+- ## 🛒 on <a href="https://blendermarket.com/products/colorrampconverter" target="_blank">Blender Market</a>
 
 - ## 🛒 on <a href="https://www.artstation.com/a/20894561" target="_blank">Artstation</a>
