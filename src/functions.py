@@ -743,8 +743,8 @@ def create_node_group(node_group_name, node_tree, color_ramp, interpolation_type
     mix_rgb_nodes = []
 
     existing_node_group = bpy.data.node_groups.get(node_group_name)
-    if existing_node_group:
-        bpy.data.node_groups.remove(existing_node_group, do_unlink=True)
+    with contextlib.suppress(Exception):
+        bpy.data.node_groups.remove(existing_node_group, do_unlink=False)
 
     node_group = bpy.data.node_groups.new(
         node_group_name, f'{node_group_type}NodeTree')
@@ -828,9 +828,8 @@ def create_node_group_v2(node_group_name, node_tree, color_ramp):
     mix_rgb_nodes = []
 
     existing_node_group = bpy.data.node_groups.get(node_group_name)
-
-    if existing_node_group:
-        bpy.data.node_groups.remove(existing_node_group, do_unlink=True)
+    with contextlib.suppress(Exception):
+        bpy.data.node_groups.remove(existing_node_group, do_unlink=False)
 
     node_group = bpy.data.node_groups.new(
         node_group_name, f'{node_group_type}NodeTree')
