@@ -49,49 +49,147 @@ class NODE_PT_convert(Panel):
         """
         Draw panel layout
         """
-        scene = context.scene
         addon_prefs = get_addon_prefs()
 
         selected_nodes = context.selected_nodes
-        num_selected_nodes = len(selected_nodes)
+
+        layout = self.layout
+
+        self.draw_panel_layout(context, addon_prefs, selected_nodes, layout)
+
+    def draw_panel_layout(self, context, addon_prefs, selected_nodes,  layout):
+        """
+        Draw the panel layout
+
+        :param context: context
+        :type context: bpy.types.Context
+        :param addon_prefs: The addon preferences
+        :type addon_prefs: bpy.types.AddonPreferences
+        :param selected_nodes: Selected nodes
+        :type selected_nodes: bpy.types.Node
+        :param layout: The panel layout
+        :type layout: bpy.types.UILayout
+        """
+
+        scene = context.scene
+
+        # Draw the convert button
+        self.convert_operator_draw(layout)
+
         any_node_group_selected = any_converted_node_group(selected_nodes)
         any_color_ramp_selected = any_color_ramp_node(selected_nodes)
 
-        layout = self.layout
-        layout.operator('wm.color_ramp_converter',
-                        text="CONVERT")
+        # Draw info about selected nodes
+        self.draw_selection_mode(
+            selected_nodes, any_node_group_selected, any_color_ramp_selected, layout)
+
+        # Draw the panel layout for node group conversion
+        if any_node_group_selected:
+            self.node_group_selected_draw(layout)
+
+        # Draw the panel layout for color ramp conversion
+        if any_color_ramp_selected:
+            self.color_ramp_selected_draw(context, layout, scene, addon_prefs)
+
+    def draw_selection_mode(self, selected_nodes, any_node_group_selected, any_color_ramp_selected, layout):
+        """
+        Draw info about selected nodes
+
+        :param selected_nodes: Selected nodes
+        :type selected_nodes: bpy.types.Node
+        :param any_node_group_selected: Is any node group selected?
+        :type any_node_group_selected: bool
+        :param any_color_ramp_selected: Is any color ramp selected?
+        :type any_color_ramp_selected: bool
+        :param layout: The panel layout
+        :type layout: bpy.types.UILayout
+        """
+
+        num_selected_nodes = len(selected_nodes)
+
         if num_selected_nodes == 0 or not any((any_node_group_selected,
                                                any_color_ramp_selected)):
+
             layout.label(text="No nodes selected")
             layout.label(text="Select Color Ramp(s)", icon='ERROR')
             layout.label(text="Select Converted Group(s)",
                          icon='ERROR')
 
-        if num_selected_nodes > 1:
+        elif num_selected_nodes > 1:
             layout.label(text="Multiple nodes selected!", icon='INFO')
 
-        if any_node_group_selected:
-            layout.label(text="Node Group -> Color Ramp")
+    def convert_operator_draw(self, layout, convert_text="CONVERT"):
+        """
+        Draw the convert button
 
-        if any_color_ramp_selected:
-            active_node_tree = context.space_data.edit_tree
-            node_tree_type = get_node_group_type(active_node_tree)
+        :param layout: The panel layout
+        :type layout: bpy.types.UILayout
+        :param convert_text: The text on the convert button
+        :type convert_text: str
+        """
+        layout.operator('wm.color_ramp_converter', text=convert_text)
 
-            layout.label(text="Color Ramp -> Node Group")
+    def node_group_selected_draw(self, layout):
+        """
+        Draw the panel layout for node group conversion
 
-            if (node_tree_type in ['Geometry', 'Shader']):
-                layout.label(text="Interpolation type:")
-                layout.prop(scene, 'node_group_interpolation', text="")
+        :param layout: The panel layout
+        :type layout: bpy.types.UILayout
+        """
+        layout.label(text="Node Group -> Color Ramp")
 
-            layout.label(text="Extra Node Type:")
+    def color_ramp_selected_draw(self, context, layout, scene, addon_prefs):
+        """
+        Draw the panel layout when color ramp nodes are selected
 
-            if (node_tree_type == 'Shader'):
-                layout.prop(scene, "extra_shader_node_type", text="")
-            elif (node_tree_type == 'Compositor'):
-                layout.prop(scene, "extra_compositor_node_type", text="")
-            elif (node_tree_type == 'Geometry'):
-                layout.prop(scene, "extra_geometry_node_type", text="")
-            layout.prop(addon_prefs, "create_extra_nodes", toggle=True)
+        :param context: context
+        :type context: bpy.types.Context
+        :param layout: The panel layout
+        :type layout: bpy.types.UILayout
+        :param scene: Scene
+        :type scene: bpy.types.Scene
+        :param addon_prefs: The addon preferences
+        :type addon_prefs: bpy.types.AddonPreferences
+        """
+
+        active_node_tree = context.space_data.edit_tree
+        node_tree_type = get_node_group_type(active_node_tree)
+
+        layout.label(text="Color Ramp -> Node Group")
+
+        if (node_tree_type in ['Geometry', 'Shader']):
+            layout.label(text="Interpolation type:")
+            layout.prop(scene, 'node_group_interpolation', text="")
+
+        # Draw the extra nodes options
+        self.extra_nodes_draw(layout, scene, addon_prefs, node_tree_type)
+
+    def extra_nodes_draw(self, layout, scene, addon_prefs, node_tree_type):
+        """
+        Draw the extra nodes options
+
+        :param layout: The panel layout
+        :type layout: bpy.types.UILayout
+        :param scene: Scene
+        :type scene: bpy.types.Scene
+        :param addon_prefs: The addon preferences
+        :type addon_prefs: bpy.types.AddonPreferences
+        :param node_tree_type: The type of the node tree
+        :type node_tree_type: str in ['Shader', 'Compositor', 'Geometry']
+        """
+
+        layout.label(text="Extra Node Type:")
+
+        # Draw the extra node type selector based on the node tree type
+        if (node_tree_type == 'Shader'):
+            layout.prop(scene, "extra_shader_node_type", text="")
+        elif (node_tree_type == 'Compositor'):
+            layout.prop(scene, "extra_compositor_node_type", text="")
+        elif (node_tree_type == 'Geometry'):
+            layout.prop(scene, "extra_geometry_node_type", text="")
+
+        # Draw the extra nodes toggle
+        layout.prop(addon_prefs, "create_extra_nodes", toggle=True)
 
 
 classes = [NODE_PT_convert]
