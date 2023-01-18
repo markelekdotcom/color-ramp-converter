@@ -38,10 +38,23 @@ to the color inputs of custom node groups.
 .. note::
     Remove extra nodes when converting back to color ramp node (optional)
 
+Addon Independent Node Groups
+------------------------------
+The created node group is NOT dependent on the addon.
+Additional features like that may be added as experimental options.
+
+
+Any Color Input
+----------------
+The custom node group can accept any color input,
+not just color nodes specifically.
+
+.. image:: images/color_input.gif
+   :alt: Addon independent feature
 
 Panel Settings / Addon Preferences
 -----------------------------------
-|Settings| to adjust a few aspects of the add-on.
+|Settings| to adjust a few aspects of the addon.
 
 .. |Settings| replace:: :ref:`settings:Settings`
 
