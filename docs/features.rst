@@ -13,6 +13,10 @@ Quickly convert between custom node group solution and color ramp node.
 .. note::
     Connected links are managed automatically by the addon
 
+Addon Independent Node Groups
+------------------------------
+The created node group is NOT dependent on the addon.
+Additional features like that may be added as experimental options.
 
 Node Group Logic
 -----------------
@@ -37,11 +41,6 @@ to the color inputs of custom node groups.
 
 .. note::
     Remove extra nodes when converting back to color ramp node (optional)
-
-Addon Independent Node Groups
-------------------------------
-The created node group is NOT dependent on the addon.
-Additional features like that may be added as experimental options.
 
 
 Any Color Input
