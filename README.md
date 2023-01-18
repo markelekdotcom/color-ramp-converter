@@ -54,3 +54,11 @@ Additional features like that may be added as experimental options.
 - Geometry node editor support
 
 - <a href="https://colorrampconverter.readthedocs.io/en/latest/" target="_blank">Documentation</a> 
+
+# Workflow
+
+- Use color ramp nodes initially due to their intuitive controls.
+
+- Convert to a custom node group to obtain additional control.
+
+- Effortlessly convert back from node group to color ramp node if necessary.
