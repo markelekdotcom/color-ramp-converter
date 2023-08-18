@@ -38,6 +38,6 @@ Installation Issues
 
 Find the folder where Blender places the addon files, something like:
 
-"C:\\Users\\[YOURUSERNAME]\\AppData\\Roaming\\Blender Foundation\\Blender\\3.3\\scripts\\addons"
+"C:\\Users\\[YOURUSERNAME]\\AppData\\Roaming\\Blender Foundation\\Blender\\[YOURBLENDERVERSION]\\scripts\\addons"
 
 **Make sure this addon's folder has this exact name: color-ramp-converter**
