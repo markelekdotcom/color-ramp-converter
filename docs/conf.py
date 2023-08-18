@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'ColorRampConverter'
-copyright = '2022, Mark Elek, David Elek'
+copyright = '2022-2023, Mark Elek, David Elek'
 author = 'Mark Elek, David Elek'
 
 # The full version, including alpha/beta/rc tags
