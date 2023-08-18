@@ -105,7 +105,7 @@ def is_mix_rgb(node):
     :return: Returns True if node is a mix rgb node, False otherwise
     :rtype: bool
     """
-    return node.__class__.__name__ in ['ShaderNodeMixRGB', 'CompositorNodeMixRGB']
+    return node.__class__.__name__ in ['ShaderNodeMix', 'ShaderNodeMixRGB', 'CompositorNodeMixRGB']
 
 
 def is_node_group_input_node(node):
@@ -329,9 +329,26 @@ def set_or_create_node_group_input(node_group, socket_type, socket_name, value):
     return existing_input
 
 
+def get_node_type_compatible(node_type):
+    """
+    Change node_types to a compatible type for newer blender versions
+
+    :param node_type: The type of the node to change
+    :type node_type: str
+    :return: Returns the compatible node type string
+    :rtype: str
+    """
+
+    # "ShaderNodeMixRGB" has been renamed to "ShaderNodeMix" in newer blender versions
+    if bpy.app.version >= (3, 6, 0) and node_type == 'ShaderNodeMixRGB':
+        return 'ShaderNodeMix'
+
+    return node_type
+
+
 def create_node(node_group, node_type, node_name, location=(0.0, 0.0)):
     """
-    Create a node in a node group
+    Create a node in a node group compatible with newer blender versions
 
     :param node_group: The node group to create the node in
     :type node_group: bpy.types.NodeGroup
@@ -344,10 +361,27 @@ def create_node(node_group, node_type, node_name, location=(0.0, 0.0)):
     :return: Returns the created node
     :rtype: bpy.types.Node
     """
+    # change node_type to compatible type for newer blender versions
+    node_type = get_node_type_compatible(node_type)
+
     node = node_group.nodes.new(node_type)
+
+    # ensure that the data type of 'ShaderNodeMix' node is set to RGBA for newer blender versions
+    if node_type == 'ShaderNodeMix':
+        ensure_mix_node_data_type(node)
+
     set_node_name(node, node_name)
     set_node_location(node, location)
     return node
+
+
+def ensure_mix_node_data_type(node):
+    """
+    Ensure that the data type of the new mix node (in newer blender versions) is set to RGBA
+    """
+    # only for newer blender versions, because of the new mix node
+    if bpy.app.version >= (3, 6, 0):
+        node.data_type = 'RGBA'
 
 
 def get_or_create_node(node_group, node_type, node_name, location=(0.0, 0.0)):
@@ -559,6 +593,9 @@ def link_nodes(node_group):
     node_group_input_node = node_group.nodes.get('Group Input')
     node_group_output_node = node_group.nodes.get('Group Output')
 
+    # mix node indices
+    color1_index, color2_index, factor_index, output_index = get_mix_node_indices()
+
     map_range_node_count = len(map_range_nodes)
     # link map range nodes
     for i in range(map_range_node_count):
@@ -581,7 +618,7 @@ def link_nodes(node_group):
 
         # link map range results to fac input of mix rgb node
         node_group.links.new(
-            map_range_nodes[i].outputs[0], mix_rgb_nodes[i].inputs[0])
+            map_range_nodes[i].outputs[0], mix_rgb_nodes[i].inputs[factor_index])
 
         # link 'to max' input to map range node
         node_group.links.new(
@@ -593,7 +630,7 @@ def link_nodes(node_group):
 
     # link first mix rgb node's color output to group output's color input
     node_group.links.new(
-        mix_rgb_nodes[0].outputs[0], node_group_output_node.inputs["Color"])
+        mix_rgb_nodes[0].outputs[output_index], node_group_output_node.inputs["Color"])
 
     mix_rgb_nodes_count = len(mix_rgb_nodes)
     # link other mix rgb nodes
@@ -601,15 +638,15 @@ def link_nodes(node_group):
 
         # link all mix rgb nodes' first color input to group input except last
         node_group.links.new(node_group_input_node.outputs[f"Color{i+1}"],
-                             mix_rgb_nodes[i].inputs[1])
+                             mix_rgb_nodes[i].inputs[color1_index])
 
         # link last mix rgb node's second color input to group input
         if i == mix_rgb_nodes_count-1:
             node_group.links.new(node_group_input_node.outputs[f"Color{i+2}"],
-                                 mix_rgb_nodes[i].inputs[2])
+                                 mix_rgb_nodes[i].inputs[color2_index])
         else:
             node_group.links.new(
-                mix_rgb_nodes[i].inputs[2], mix_rgb_nodes[i+1].outputs[0])
+                mix_rgb_nodes[i].inputs[color2_index], mix_rgb_nodes[i+1].outputs[output_index])
 
 
 def link_nodes_v2(node_group):
@@ -627,6 +664,9 @@ def link_nodes_v2(node_group):
     node_group_input_node = node_group.nodes.get('Group Input')
     node_group_output_node = node_group.nodes.get('Group Output')
 
+    # mix node indices
+    color1_index, color2_index, factor_index, output_index = get_mix_node_indices()
+
     color_ramp_node_count = len(color_ramp_nodes)
 
     for i in range(color_ramp_node_count):
@@ -637,24 +677,24 @@ def link_nodes_v2(node_group):
 
         # Link the Color Ramps' 'Color' output to MixRGB nodes' 'Fac' inputs
         node_group.links.new(color_ramp_nodes[i].outputs[0],
-                             mix_rgb_nodes[i].inputs['Fac'])
+                             mix_rgb_nodes[i].inputs[factor_index])
 
         if i+1 < color_ramp_node_count:
 
             # link MixRGB nodes together
-            node_group.links.new(mix_rgb_nodes[i+1].outputs[0],
-                                 mix_rgb_nodes[i].inputs[2])
+            node_group.links.new(mix_rgb_nodes[i+1].outputs[output_index],
+                                 mix_rgb_nodes[i].inputs[color2_index])
 
         # link the node group's color inputs to MixRgb nodes' 'Color1' inputs
         node_group.links.new(node_group_input_node.outputs[f"Color{i+1}"],
-                             mix_rgb_nodes[i].inputs[1])
+                             mix_rgb_nodes[i].inputs[color1_index])
 
     # Link the last MixRGB node's 'Color2' inputs to the node group's 'Color' inputs
     node_group.links.new(node_group_input_node.outputs[f"Color{color_ramp_node_count+1}"],
-                         mix_rgb_nodes[-1].inputs[2])
+                         mix_rgb_nodes[-1].inputs[color2_index])
 
     # Link the first MixRGB node's 'Color' output to the node group's 'Color' output
-    node_group.links.new(mix_rgb_nodes[0].outputs[0],
+    node_group.links.new(mix_rgb_nodes[0].outputs[output_index],
                          node_group_output_node.inputs[0])
 
 
@@ -827,6 +867,9 @@ def create_node_group_v2(node_group_name, node_tree, color_ramp):
     color_ramp_nodes = []
     mix_rgb_nodes = []
 
+    # mix node indices
+    color1_index, color2_index, _, _ = get_mix_node_indices()
+
     existing_node_group = bpy.data.node_groups.get(node_group_name)
     with contextlib.suppress(Exception):
         bpy.data.node_groups.remove(existing_node_group, do_unlink=False)
@@ -882,13 +925,24 @@ def create_node_group_v2(node_group_name, node_tree, color_ramp):
             # add mix rgb nodes
             mix_rgb_node = create_node(node_group, f'{node_tree_type}NodeMixRGB',
                                        f'Mix{i+1}', (200, -i*300))
-            # set mix rgb node's firts color
-            mix_rgb_node.inputs[1].default_value = color_stop_current.color
+
+            # set mix rgb node's first color
+            color = color_stop_current.color
+
+            # have to set RGB values separately because of RGB and RGBA list size
+            mix_rgb_node.inputs[color1_index].default_value[0] = color[0]
+            mix_rgb_node.inputs[color1_index].default_value[1] = color[1]
+            mix_rgb_node.inputs[color1_index].default_value[2] = color[2]
 
             mix_rgb_nodes.append(mix_rgb_node)
 
     # set last mix rgb node's second color
-    mix_rgb_nodes[-1].inputs[2].default_value = color_ramp.color_ramp.elements[-1].color
+    color = color_ramp.color_ramp.elements[-1].color
+
+    # have to set RGB values separately because of RGB and RGBA list size
+    mix_rgb_nodes[-1].inputs[color2_index].default_value[0] = color[0]
+    mix_rgb_nodes[-1].inputs[color2_index].default_value[1] = color[1]
+    mix_rgb_nodes[-1].inputs[color2_index].default_value[2] = color[2]
 
     link_nodes_v2(node_group)
 
@@ -896,6 +950,27 @@ def create_node_group_v2(node_group_name, node_tree, color_ramp):
         node_group, node_group_type, node_group_name, node_tree)
 
     return node_group
+
+
+def get_mix_node_indices():
+    """
+    Get the indices of the color1, color2, factor and output sockets of a mix node.
+    Newer blender versions might have a different order or/and number of sockets.
+    Using indices instead of names to avoid issues.
+    """
+    # new mix node in newer blender versions
+    if bpy.app.version >= (3, 6, 0):
+        color1 = 6
+        color2 = 7
+        factor = 'Factor'
+        output = 2
+    else:
+        color1 = 1
+        color2 = 2
+        factor = 'Fac'
+        output = 0
+
+    return color1, color2, factor, output
 
 
 def copy_base_color_ramp(src_color_ramp, dest_color_ramp):
