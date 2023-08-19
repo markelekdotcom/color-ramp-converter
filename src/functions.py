@@ -957,18 +957,28 @@ def get_mix_node_indices():
     Get the indices of the color1, color2, factor and output sockets of a mix node.
     Newer blender versions might have a different order or/and number of sockets.
     Using indices instead of names to avoid issues.
+    :return: Indices for mix node sockets
+    :rtype: int, int, str, int
     """
-    # new mix node in newer blender versions
-    if bpy.app.version >= (3, 6, 0):
+
+    active_node_tree = bpy.context.space_data.edit_tree
+
+    # handle new mix node in newer blender versions
+    # except in compositor
+    is_compositor_node_tree = active_node_tree.bl_idname == 'CompositorNodeTree'
+
+    if not is_compositor_node_tree and bpy.app.version >= (3, 6, 0):
         color1 = 6
         color2 = 7
         factor = 'Factor'
         output = 2
-    else:
-        color1 = 1
-        color2 = 2
-        factor = 'Fac'
-        output = 0
+
+        return color1, color2, factor, output
+
+    color1 = 1
+    color2 = 2
+    factor = 'Fac'
+    output = 0
 
     return color1, color2, factor, output
 
