@@ -8,7 +8,7 @@ First Installation
 #. Go to *Edit* -> *Preferences*.
 #. Select the *Add-ons* tab on the left if it is not already.
 #. Select the *Install...* button along the top. This will open a file dialog.
-#. Go to where you have downloaded **ColorRampConverter_version_blenderversion.zip** file.
+#. Go to where you have downloaded **ColorRampConverter_version.zip** file.
 #. Then, click the *Install add-on from file* button.
 #. Search for the add-on by typing *colorrampconverter* in the search box.
 #. Make sure the checkbox next to this Add-on is ticked:
