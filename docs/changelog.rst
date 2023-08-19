@@ -5,7 +5,7 @@ Changelog
 1.2.0
 ------
 
-  August 18, 2023
+  August 19, 2023
 
   * Change: The new Mix node is used by default in Blender 3.6 and above
   * Support: Convert a node group back to a color ramp, even with the old types of mix nodes in it
