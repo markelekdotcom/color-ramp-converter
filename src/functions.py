@@ -296,7 +296,14 @@ def create_node_group_input(node_group, socket_type, socket_name, value):
             "Invalid socket type!"
             "Should be str in ['NodeSocketColor', 'NodeSocketFloat'] !")
 
-    node_group_input = node_group.inputs.new(socket_type, socket_name)
+    # check blender version
+    if bpy.app.version < (4, 0, 0):
+        node_group_input = node_group.inputs.new(socket_type, socket_name)
+    else:
+        # blender 4.0 and above
+        node_group_input = node_group.interface.new_socket(
+            name=socket_name, socket_type=socket_type)
+
     node_group_input.default_value = value
     return node_group_input
 
@@ -802,16 +809,37 @@ def create_node_group(node_group_name, node_tree, color_ramp, interpolation_type
     node_group_output_node.location = (400, 0)
 
     # add color input to group output node
-    node_group.outputs.new('NodeSocketColor', 'Color')
+    # check blender version
+    if bpy.app.version < (4, 0, 0):
+        node_group.outputs.new('NodeSocketColor', 'Color')
+    else:
+        # blender 4.0 and above
+        node_group.interface.new_socket(
+            name='Color', socket_type='NodeSocketColor', in_out='OUTPUT')
 
     # create nodes
     for i in range(color_count):
         # add colors of color stops as inputs to node group
-        color_input = node_group.inputs.new('NodeSocketColor', f'Color{i+1}')
+        # check blender version
+        if bpy.app.version < (4, 0, 0):
+            color_input = node_group.inputs.new(
+                'NodeSocketColor', f'Color{i+1}')
+        else:
+            # blender 4.0 and above
+            color_input = node_group.interface.new_socket(
+                name=f'Color{i+1}', socket_type='NodeSocketColor', in_out='INPUT')
+
         color_input.default_value = color_ramp_elements[i].color
 
         # add positions of color stops as inputs to node group
-        pos_input = node_group.inputs.new('NodeSocketFloat', f'Pos{i+1}')
+        # check blender version
+        if bpy.app.version < (4, 0, 0):
+            pos_input = node_group.inputs.new('NodeSocketFloat', f'Pos{i+1}')
+        else:
+            # blender 4.0 and above
+            pos_input = node_group.interface.new_socket(
+                name=f'Pos{i+1}', socket_type='NodeSocketFloat', in_out='INPUT')
+
         pos_input.default_value = color_ramp_elements[i].position
 
         # need one less from these nodes
@@ -890,12 +918,27 @@ def create_node_group_v2(node_group_name, node_tree, color_ramp):
     node_group_output_node.location = (400, 0)
 
     # add color input to group output node
-    node_group.outputs.new('NodeSocketColor', 'Color')
+    # check blender version
+    if bpy.app.version < (4, 0, 0):
+        node_group.outputs.new('NodeSocketColor', 'Color')
+    else:
+        # blender 4.0 and above
+        node_group.interface.new_socket(
+            name='Color', socket_type='NodeSocketColor', in_out='OUTPUT')
 
     # create nodes
     for i in range(color_count):
         # add colors of color stops as inputs to node group
-        color_input = node_group.inputs.new('NodeSocketColor', f'Color{i+1}')
+
+        # check blender version
+        if bpy.app.version < (4, 0, 0):
+            color_input = node_group.inputs.new(
+                'NodeSocketColor', f'Color{i+1}')
+        else:
+            # blender 4.0 and above
+            color_input = node_group.interface.new_socket(
+                socket_type='NodeSocketColor', name=f'Color{i+1}', in_out='INPUT')
+
         color_input.default_value = color_ramp_elements[i].color
 
         # need one less from these nodes

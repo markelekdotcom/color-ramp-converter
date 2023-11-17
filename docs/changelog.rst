@@ -2,6 +2,14 @@
 Changelog
 #####################################
 
+1.3.0
+------
+
+  November 17, 2023
+
+  * Fix: Add support for blender 4.0 
+  * Tested on **Blender** versions: **3.6.1, and 4.0.0** for compatibility
+
 1.2.0
 ------
 
