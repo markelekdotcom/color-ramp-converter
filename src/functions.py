@@ -3,7 +3,7 @@
 # GPLv3 License
 #
 # ColorRampConverter
-# Copyright (C) 2022-2023, Mark Elek, David Elek
+# Copyright (C) 2022-2024, Mark Elek, David Elek
 #
 # ColorRampConverter is a Blender addon that generates
 # custom node groups from color ramp nodes,
