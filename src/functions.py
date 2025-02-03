@@ -848,6 +848,11 @@ def create_node_group(node_group_name, node_tree, color_ramp, interpolation_type
             map_range_node = create_node(node_group, f'{node_tree_type}NodeMapRange',
                                          f'Map Range{i+1}', (0, -i*300))
             set_map_range_interpolation(map_range_node, interpolation_type)
+            
+            # set steps to a near zero value to achieve constant interpolation with map range node when using stepped interpolation      
+            if interpolation_type == 'STEPPED':
+                map_range_node.inputs[5].default_value = 0.0001
+            
             map_range_nodes.append(map_range_node)
 
             # add mix rgb nodes
@@ -1170,10 +1175,26 @@ def convert_color_ramp(self, context, color_ramp, node_tree):
     color_ramp_location = color_ramp.location
 
     node_group = None
+    
+    node_tree_type = get_node_group_type(node_tree)
 
+    # constant interpolation
     if color_ramp.color_ramp.color_mode == 'RGB' and color_ramp.color_ramp.interpolation == 'CONSTANT':
-        node_group = create_node_group_v2(
-            f'Converted{color_ramp.name}', node_tree, color_ramp)
+
+        # TODO: add support for COMPOSITOR
+        if not addon_prefs.legacy_const_ramp_conv and node_tree_type in ['Shader', 'Geometry']:
+            # with position inputs (using the same node setup as for linear interpolation),
+            # slightly different visual result
+            # due to the stepped linear interpolation applied on the Map Range nodes
+            # (steps is set to a value close to 0) 
+            node_group = create_node_group(f'Converted{color_ramp.name}', node_tree, color_ramp,
+                                       'STEPPED')
+        else:
+            # without position inputs
+            # same visual result
+            node_group = create_node_group_v2(
+                f'Converted{color_ramp.name}', node_tree, color_ramp) 
+
     else:
         node_group = create_node_group(f'Converted{color_ramp.name}', node_tree, color_ramp,
                                        scene.node_group_interpolation)
@@ -1188,7 +1209,7 @@ def convert_color_ramp(self, context, color_ramp, node_tree):
     # override node
     remove_node(color_ramp, node_tree)
 
-    node_tree_type = get_node_group_type(node_tree)
+
     if addon_prefs.create_extra_nodes:
         if node_tree_type == 'Shader':
             extra_node_type = context.scene.extra_shader_node_type

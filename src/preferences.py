@@ -53,6 +53,12 @@ class Preferences(AddonPreferences):
         description="Remove extra nodes when converting back to color ramp",
         default=True
     )
+    
+    legacy_const_ramp_conv: BoolProperty(
+        name="Legacy Constant Ramp Conversion",
+        description="Uses color ramps instead of map range nodes.",
+        default=False
+    )
 
     def draw(self, context):
         layout = self.layout
@@ -66,6 +72,12 @@ class Preferences(AddonPreferences):
         row = box.row()
         row.prop(self, "remove_extra_nodes")
         row.enabled = self.create_extra_nodes
+        
+        box = layout.box()
+        row = box.row()
+        row.prop(self, "legacy_const_ramp_conv")
+        warning_row = box.row()
+        warning_row.label(text="Does NOT generate position inputs for constant interpolation node groups!", icon='ERROR')
 
         row = layout.row()
         row.scale_y = 1.5
