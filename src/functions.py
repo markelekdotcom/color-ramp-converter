@@ -1179,7 +1179,7 @@ def convert_color_ramp(self, context, color_ramp, node_tree):
     node_tree_type = get_node_group_type(node_tree)
 
     # constant interpolation
-    if color_ramp.color_ramp.color_mode == 'RGB' and color_ramp.color_ramp.interpolation == 'CONSTANT':
+    if color_ramp.color_ramp.interpolation == 'CONSTANT':
 
         # TODO: add support for COMPOSITOR
         if not addon_prefs.legacy_const_ramp_conv and node_tree_type in ['Shader', 'Geometry']:
