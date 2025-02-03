@@ -11,7 +11,7 @@ What is ColorRampConverter?
 
 |Links|
 
-.. |Links| replace:: |Gumroad| `|` |Blendermarket| `|` |Artstation| `|` :ref:`contact:Contact`
+.. |Links| replace:: |Gumroad| `|` |Blendermarket| `|` :ref:`contact:Contact`
 
 
 .. |Gumroad| raw:: html
@@ -21,11 +21,6 @@ What is ColorRampConverter?
 .. |Blendermarket| raw:: html
 
    <a href="https://blendermarket.com/products/colorrampconverter" target="_blank">BlenderMarket</a>
-
-.. |Artstation| raw:: html
-
-   <a href="https://www.artstation.com/a/20894561" target="_blank">Artstation</a>
-
 
 
 .. |Patreon| raw:: html
