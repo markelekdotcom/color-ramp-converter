@@ -17,8 +17,8 @@ Button to convert selected color ramps to custom node groups and vice versa.
 
 Interpolation Type
 ------------------
-Set the map range node interpolation type
-inside converted color ramp node groups.
+Defines the interpolation type for the Map Range nodes within converted Color Ramp node groups. 
+This applies when the Color Ramp interpolation type is **NOT** set to Constant.
 
 
 Extra Node Type
