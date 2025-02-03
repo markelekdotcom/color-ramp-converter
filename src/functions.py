@@ -475,11 +475,17 @@ def set_extra_node_input_color(node, color_input, color):
     :type color: float array of 4 items in [0.0, 1.0]
     """
     with contextlib.suppress(Exception):
-        # some nodes don't have color 'inputs'
+        # some nodes have 'color' as the default values
         node.color = color
 
-    for i in range(len(color_input.default_value)):
-        color_input.default_value[i] = color[i]
+    with contextlib.suppress(Exception):
+        # some nodes have 'value' instead of 'color' as the default values
+        node.value = color
+
+    with contextlib.suppress(Exception):
+        # some nodes have 'default_value' instead of 'color' or 'value' as the default values
+        for i in range(len(color_input.default_value)):
+            color_input.default_value[i] = color[i]
 
 
 def get_extra_node_color_input(extra_node):
