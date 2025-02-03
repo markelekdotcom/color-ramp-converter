@@ -2,6 +2,15 @@
 Changelog
 #####################################
 
+1.4.0
+------
+February 03, 2024
+
+  * Add: Input nodes for constant color ramp conversion
+  * Fix: Wrong default colors of extra nodes in geometry nodes
+  * Add: Support for blender 4.3
+  * Tested on **Blender** versions: **4.3.0** for compatibility
+
 1.3.0
 ------
 
