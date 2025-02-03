@@ -1,9 +1,9 @@
 ![ColorRampConverter](docs/images/colorrampconverter_index.png)
 
-[![Blender 4.0](https://img.shields.io/badge/Blender-4.0.0-blue.svg)](https://www.blender.org/) 
+[![Blender 4.3](https://img.shields.io/badge/Blender-4.3.0-blue.svg)](https://www.blender.org/) 
 ![GitHub](https://img.shields.io/github/license/markelekdotcom/color-ramp-converter?color=blue)
 [![Documentation Status](https://readthedocs.org/projects/colorrampconverter/badge/?version=latest)](https://colorrampconverter.readthedocs.io/en/latest/?badge=latest)
-![Maintenance](https://img.shields.io/maintenance/yes/2024)
+![Maintenance](https://img.shields.io/maintenance/yes/2025)
 ![GitHub issues](https://img.shields.io/github/issues-raw/markelekdotcom/color-ramp-converter)
 
 # Color Ramp Converter
