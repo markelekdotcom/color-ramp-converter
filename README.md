@@ -1,6 +1,6 @@
 ![ColorRampConverter](docs/images/colorrampconverter_index.png)
 
-[![Blender 4.3](https://img.shields.io/badge/Blender-4.3.0-blue.svg)](https://www.blender.org/) 
+[![Blender 4.4](https://img.shields.io/badge/Blender-4.4.0-blue.svg)](https://www.blender.org/) 
 ![GitHub](https://img.shields.io/github/license/markelekdotcom/color-ramp-converter?color=blue)
 [![Documentation Status](https://readthedocs.org/projects/colorrampconverter/badge/?version=latest)](https://colorrampconverter.readthedocs.io/en/latest/?badge=latest)
 ![Maintenance](https://img.shields.io/maintenance/yes/2025)
@@ -14,7 +14,7 @@ Read more: <a href="https://colorrampconverter.readthedocs.io/en/latest/" target
 
 - ## 🛒 on <a href="https://davidelek.gumroad.com/l/colorrampconverter" target="_blank">Gumroad</a>
 
-- ## 🛒 on <a href="https://blendermarket.com/products/colorrampconverter" target="_blank">Blender Market</a>
+- ## 🛒 on <a href="https://superhivemarket.com/products/colorrampconverter" target="_blank">Superhive (formerly Blender Market)</a>
 
 # Features
 

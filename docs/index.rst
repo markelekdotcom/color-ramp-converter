@@ -11,16 +11,16 @@ What is ColorRampConverter?
 
 |Links|
 
-.. |Links| replace:: |Gumroad| `|` |Blendermarket| `|` :ref:`contact:Contact`
+.. |Links| replace:: |Gumroad| `|` |Superhive| `|` :ref:`contact:Contact`
 
 
 .. |Gumroad| raw:: html
 
    <a href="https://davidelek.gumroad.com/l/colorrampconverter" target="_blank">Gumroad</a>
 
-.. |Blendermarket| raw:: html
+.. |Superhive| raw:: html
 
-   <a href="https://blendermarket.com/products/colorrampconverter" target="_blank">BlenderMarket</a>
+   <a href="https://superhivemarket.com/products/colorrampconverter" target="_blank">Superhive (formerly Blender Market)</a>
 
 
 .. |Patreon| raw:: html
