@@ -2,6 +2,14 @@
 Changelog
 #####################################
 
+1.5.0
+------
+January 08, 2026
+
+  * Fix: Compositor node changes in blender 5.0
+  * Add: Support for blender 5.0
+  * Tested on **Blender** versions: **5.0.0** for compatibility
+
 1.4.0
 ------
 February 03, 2024
