@@ -765,7 +765,13 @@ def get_node_type(node_tree):
     if node_tree.bl_idname in ['ShaderNodeTree', 'GeometryNodeTree']:
         return 'Shader'
     elif node_tree.bl_idname == 'CompositorNodeTree':
+        
+        # starting with Blender 5.0, Compositor nodes (which this add-on uses) are unified with Shader nodes.
+        if bpy.app.version >= (5, 0, 0):
+            return 'Shader'
+
         return 'Compositor'
+
     else:
         raise TypeError(
             f'Node tree: {node_tree.name} is not a shader, compositor or geometry node tree')
@@ -1020,6 +1026,16 @@ def get_mix_node_indices():
     # handle new mix node in newer blender versions
     # except in compositor
     is_compositor_node_tree = active_node_tree.bl_idname == 'CompositorNodeTree'
+    
+    
+    # starting with Blender 5.0, Compositor node trees use the same Mix node implementation as Shader node trees.
+    if is_compositor_node_tree and bpy.app.version >= (5, 0, 0):
+        color1 = 'A'
+        color2 = 'B'
+        factor = 'Factor'
+        output = 'Result'
+        
+        return color1, color2, factor, output
 
     if not is_compositor_node_tree and bpy.app.version >= (3, 6, 0):
         color1 = 6
