@@ -57,6 +57,15 @@ def extra_compositor_node_type_items(self, context):
     :return: list of node types to pick from for extra nodes
     :rtype: list of tuples (string, string, string)
     """
+
+    # in Blender 5.0, some compositor node types were changed
+    # CompositorNodeMixRGB -> ShaderNodeMixRGB
+    if bpy.app.version >= (5, 0, 0):
+        return [
+        ('CompositorNodeRGB', 'RGB', ""),
+        ('ShaderNodeMixRGB', 'MixRGB', ""),
+    ]
+
     return [
         ('CompositorNodeRGB', 'RGB', ""),
         ('CompositorNodeMixRGB', 'MixRGB', ""),

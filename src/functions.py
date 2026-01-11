@@ -764,8 +764,9 @@ def get_node_type(node_tree):
     """
     if node_tree.bl_idname in ['ShaderNodeTree', 'GeometryNodeTree']:
         return 'Shader'
-    elif node_tree.bl_idname == 'CompositorNodeTree':
-        
+    
+    if node_tree.bl_idname == 'CompositorNodeTree':
+
         # starting with Blender 5.0, Compositor nodes (which this add-on uses) are unified with Shader nodes.
         if bpy.app.version >= (5, 0, 0):
             return 'Shader'
